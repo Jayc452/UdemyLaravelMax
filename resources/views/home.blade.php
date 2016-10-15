@@ -61,7 +61,7 @@
 		<br>
 		<br>
 		
-		<h4> These links/actions are got from NiceActions table in DB</h4>
+		<h4> These links/actions are got from NiceActions table in DB & work using GET method</h4>
 		
 		<!--  we get these from getHome method in NiceActionController -->
 		@foreach($actions as $action)
@@ -78,6 +78,8 @@
 		<!--  we have an laravel style if loop, inside which we have laravel style forloop -->
 		<!--  $errors is a laravel object which contains all the errors when we use laravel's validate method -->
 		
+		
+		<h4> The below form uses POST method </h4>
 		
 		@if(count($errors) > 0)
 		
@@ -142,12 +144,10 @@
 			
 		</form>
 		<br>
-		
-		<h4> Inserting actions into NiceActions table</h4>
-		
+			
 			
 		
-		<h5> Create your actions below</h5>
+		<h4> Create your actions below</h4>
 		
 			
 		<br>
@@ -178,7 +178,7 @@
 		
 		<br>
 		<br>
-				<h6> These are logged actions & their categories</h6>
+				<h4> These are logged actions & their categories</h4>
 		
 	    <!--  go through all the items in $logged_actions - which contains list of logged actions 
 	    FYI $logged_actions is an array of NiceActionLog objects that we got from getHome method in our controller-->
@@ -189,8 +189,7 @@
 			this is how we access the name of the niceAction which is logged in the logged_action -->
 			<li> {{  $logged_action->nice_action->name	}} 
 			
-			    
-			    <!-- get the category of nice_action from $logged_action which is an object of NiceActionLog 
+			      <!-- get the category of nice_action from $logged_action which is an object of NiceActionLog 
 			    FYI NiceAction & Category model have many to many relationship and this is stored in table categories_nice_actions
 			    traverse through all the categories and get the name of each of them using foreach loop
 			    -->
@@ -200,6 +199,7 @@
 					{{ $category->name }}
 					
 				@endforeach
+			  
 			
 			</li>		
 					
