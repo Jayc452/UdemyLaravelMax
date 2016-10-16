@@ -179,12 +179,12 @@
 		<br>
 		<br>
 				<h4> These are logged actions & their categories</h4>
-		
-	    <!--  go through all the items in $logged_actions - which contains list of logged actions 
+				
+			   <!--  go through all the items in $logged_actions - which contains list of logged actions 
 	    FYI $logged_actions is an array of NiceActionLog objects that we got from getHome method in our controller-->
 	  	@foreach($logged_actions as $logged_action)
 	  	
-			<!--  nice_actions table has a one to many relationship with nice_action_logs table AKA NiceActionLog model
+		 	<!--  nice_actions table has a one to many relationship with nice_action_logs table AKA NiceActionLog model
 			FYI $logged_actions is an array of NiceActionLog object that we got from getHome method in our controller
 			this is how we access the name of the niceAction which is logged in the logged_action -->
 			<li> {{  $logged_action->nice_action->name	}} 
@@ -201,11 +201,33 @@
 				@endforeach
 			  
 			
-			</li>		
+			</li>	
+		  	
 					
 		@endforeach	
 		
+		<br><br>
+			
+			<!--  shows pagination links on beside the other -->
+			
+		@if($logged_actions->lastPage() > 1)
+		
+			@for($i = 1; $i  <= $logged_actions->lastPage(); $i++)
+			
+				<a href="{{ $logged_actions->url($i) }}"> {{ $i }}</a>
+			
+			@endfor
+		
+		@endif
+		
+		<!--  shows pagination links one below the other -->
+		{!! $logged_actions->links() !!}		
+
+		
+
+		
 	
+		
 
 							
 	</div>

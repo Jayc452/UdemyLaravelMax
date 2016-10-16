@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 //import NiceAction class 
 use App\NiceAction;
 
+//import DB class, if we are using query builder to interact with database instead of ORM.
+use DB;
+
 //class for Request object from post method
 use illuminate\Http\Request;
 use App\NiceActionLog;
@@ -19,25 +22,31 @@ class NiceActionController extends Controller{
 		
 		//retreive all records from the NiceActions table using NiceAction model
 		//all is a method that is available in the parent class of NiceAction
+		//here we are using ORM to fetch all the records
 		$actions = NiceAction::all();
 		
+		//get all records in nice_actions table. ordered by descending order of niceness
+		$actions = NiceAction::orderBy('niceness', 'desc')->get();
+
 		//get all logged actions in the NiceActionLog model
  		$logged_actions = NiceActionLog::all();
-		
+ 		
+ 		//enables pagination and returns 5 results per page.
+ 		$logged_actions = NiceActionLog::paginate(5);
 	
 		//pass the $actions we got from NiceAction table to home view
 		//also pass the logged actions, so we can display them on the home view
 		return view('home', ['actions' => $actions, 'logged_actions' => $logged_actions]);
 		
 	}
-	
+	 
 	//function that will handle http get method when action links are clicked on the home screen
 	//the parameters to this method are passed
 	//$name=null is there to handle instances when $name is not passed
 	//$action is extracted from the url
 	public function getNiceAction($action, $name = null){
 		
-		//find the niceAction object where name = $action that is clicked
+		//find the niceAction object where name = $action (hug, kiss, greet) that is clicked
 		//the first result will be most likely the one we want. else we will need to navigate through all the records
 		$nice_action = NiceAction::where('name', $action)->first();
 		
@@ -54,6 +63,8 @@ class NiceActionController extends Controller{
 		//NiceAction & NiceActionLogs models
 		//then apply save and pass the argument $nice_action_log which is our log entry
 		$nice_action->logged_actions()->save($nice_action_log);
+		
+
 		
 		//1st param is the view to be rendered
 		//2nd param is the params that can be used in the view
