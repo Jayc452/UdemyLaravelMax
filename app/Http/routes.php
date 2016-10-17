@@ -65,7 +65,10 @@ Route::group(['prefix' => 'do'], function(){
 	//the url for this route is /greet or /greet/<someName>
 	//{name?} is blade synatx indicating that there is parameter passed there.
 	//the ? indicates that the parameter is optional
+	//name parameter is got from the formin home.blade.php
 	// in the function $name = null, is set in the event there is no name parameter passed in url
+    //here the name has to be directly there in the url itself. 
+    //to test go to url http://laraveldemomax.dev/greet/somenameheere & http://laraveldemomax.dev/greet
 	Route::get('/greet/{name?}', function ($name = null) {
 	
 		//the 1st param is the view we want to render
@@ -80,6 +83,8 @@ Route::group(['prefix' => 'do'], function(){
 	Route::get('/kiss', function () {
 		return view('actions.kiss');
 	})->name('kiss');
+	
+	
 	
 	//this route will handle POST request
 	//inside the function param, the $request object will hold the values of the form
@@ -142,12 +147,13 @@ Route::get('/{action}/{name?}', [
 
 		//controller & method in it that is used to process requests to this route
 		'uses' => 'NiceActionController@getNiceAction',
-		
+
 		//name of this route
 		//this is the name that will be used in the views
 		'as' => 'niceaction'
-		
+
 ]);
+
 
 /*
  * POST method.
@@ -156,14 +162,14 @@ Route::get('/{action}/{name?}', [
  *
  */
 
-Route::post('/', [
+Route::post('/benicePost', [
 	
 		//controller & method in it that is used to process requests to this route
 		'uses' => 'NiceActionController@postNiceAction',
 			
 		//name of this route
 		//this is the name that will be used in the views
-		'as'=> 'benice'
+		'as'=> 'benicePost'
 		
 ]);
 
@@ -172,7 +178,9 @@ Route::post('/', [
  * Insert an action into db using addNiceAction method in NiceController
  * Note this form uses http post method to send the form content  
  * 
- */
+*/
+
+
 Route::post('/', [
 
 		//controller & method in it that is used to process requests to this route
@@ -183,3 +191,11 @@ Route::post('/', [
 		'as'=> 'add_action'
 
 ]);
+
+Route::get('log/log/logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+
+
+
+
+
+

@@ -5,6 +5,8 @@
 <!-- the content inside this block will be populated in the corresponding block in master.blade.php -->
 @section('content')
 
+<script   src="//code.jquery.com/jquery-1.12.0.min.js"  ></script>
+
 	<div class="centered">
 	
 	
@@ -36,7 +38,8 @@
 			<input type="text" name="name" />
 			
 			<!--  submit button  -->
-			<button type="submit"> Do a nice action! </button>
+			<!--  add a onClick param that will call our Javascript send function, so that we can use ajax to process the form -->
+			<button type="submit" > Do a nice action! </button>
 			
 			<!--  Cross Site Request Forgery (CSRF) protection by laravel  -->
 			<!--  get our session token given by laravel and pass it as hidden value to protect against CSRF -->
@@ -83,7 +86,7 @@
 		
 		@if(count($errors) > 0)
 		
-		
+			<P> WE HAVE ERRORS </P>
 		
 			<div>
 				<ul>
@@ -120,7 +123,7 @@
 		
 		<!--  create a form with POST method -->
 		<!-- the action is route benice, which is the route that will be executed when the submit button is clicked-->
-		<form action="{{ route('benice') }} " method = "post">
+		<form action="{{ route('benicePost') }} " method = "post">
 		
 			<label for="select-action"> I want to</label>
 			
@@ -155,20 +158,20 @@
 		
 		<!--  create a form with POST method -->
 		<!-- the action is route benice, which is the route that will be executed when the submit button is clicked-->
-		<form action="{{ route('add_action') }} " method = "post">
+		<form action="{{ route('add_action') }}" method = "post">
 		
 			<label for="actionName"> Name of the action:</label>
 			
 			<!-- name field  -->
-			<input type="text" name="actionName" />
+			<input type="text" name="actionName" id="actionName"/>
 			
 			<label for="niceness"> Int value for the action:</label>
 			
 			<!-- name field  -->
-			<input type="text" name="intValueOfAction" />
+			<input type="text" name="intValueOfAction" id="intValueOfAction" />
 			
 			<!--  submit button  -->
-			<button type="submit"> Create a nice action! </button>
+			<button type="submit"  onclick="send(event)"> Create a nice action! </button>
 			
 			<!--  Cross Site Request Forgery (CSRF) protection by laravel  -->
 			<!--  get our session token given by laravel and pass it as hidden value to protect against CSRF -->
@@ -176,6 +179,25 @@
 			
 		</form>
 		
+		<br>
+		<br>
+		 <button onclick="alert('Hi')">Click Me - Button 1!</button>
+	
+		<br>
+		<br>
+			 <button id="testButton">Click Me - Button 2!</button>
+			 
+		<br>
+		<br>
+		<br>
+		<br>
+
+		
+			 
+		<br>
+		<br>
+			 <button onclick="sendTest(Event)">Click Me - Button 3!</button>
+			 
 		<br>
 		<br>
 				<h4> These are logged actions & their categories</h4>
@@ -214,25 +236,78 @@
 		
 			@for($i = 1; $i  <= $logged_actions->lastPage(); $i++)
 			
+			    <!--  url method available because we used paginate method to get the logged_actions -->
 				<a href="{{ $logged_actions->url($i) }}"> {{ $i }}</a>
 			
 			@endfor
 		
 		@endif
-		
-		<!--  shows pagination links one below the other -->
-		{!! $logged_actions->links() !!}		
-
-		
-
-		
-	
-		
-
 							
 	</div>
 	
+	<script type="text/javascript">
+
 	
+// 		 alert("Page loaded!");
+
+// 		 //check if jquery exists
+// 		if(typeof jQuery !== "undefined"){  // this checks if jQuery variable exists or is undefined and else command too works here
+// 			alert("jQuery is installed");		
+// 		}
+// 		else {
+// 			alert("jQuery is not installed");
+// 		}
+
+// 		//access the button with its id
+// 		$("#testButton").click(function()  { 
+
+// 			alert("Button 2 is clicked");
+
+// 		});
+
+			
+		function sendTest(event){
+
+			alert("Button 3 clicked");
+
+		}
+
+
+		// send function
+		//this function is called when the submit button is clicked. see the form above.
+		function send(event){
+
+			//dont do the default action which would reload the page.
+			event.preventDefault(); 	
+
+			name =  $("#actionName").val();
+			niceness =  $('#intValueOfAction').val();
+			token = "{{ Session::token() }}";
+			
+			alert("so you want to create an action for " + name + " " + niceness + " " + token);
+
+// 			Log::info('create ajax request');
+			//create ajax call
+			$.ajax({
+
+				
+				
+				//This is a Http POST request 
+				type:"POST",
+				//the url for the handling the POST request
+				//note that we are using blade template to 
+				url:"{{ route('add_action') }}",
+				//get the form values from nice & niceness fields in the form using their id (NOT name)
+				//also pass the session token which is very important
+				data: {actionName: $("#actionName").val(), intValueOfAction: $('#intValueOfAction').val(), _token: "{{ Session::token() }}" }
+				
+
+			});
+				
+		}
+	
+	
+	</script>
 	
 	
 

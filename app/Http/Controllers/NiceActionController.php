@@ -6,11 +6,18 @@ namespace App\Http\Controllers;
 //import NiceAction class 
 use App\NiceAction;
 
+//import Log facade/class
+use Illuminate\Support\Facades\Log;
+
+//import Session class
+use Session;
+
 //import DB class, if we are using query builder to interact with database instead of ORM.
 use DB;
 
 //class for Request object from post method
 use illuminate\Http\Request;
+
 use App\NiceActionLog;
 
 //create a new controller which inherits from Controller class
@@ -19,6 +26,8 @@ class NiceActionController extends Controller{
 	
 	//this will return the actions that can be displayed in the home view
 	public function getHome(){
+		
+		Session::flash('message', 'inside Home !');
 		
 		//retreive all records from the NiceActions table using NiceAction model
 		//all is a method that is available in the parent class of NiceAction
@@ -34,6 +43,8 @@ class NiceActionController extends Controller{
  		//enables pagination and returns 5 results per page.
  		$logged_actions = NiceActionLog::paginate(5);
 	
+ 		Log::info('Inside Home:');
+ 		
 		//pass the $actions we got from NiceAction table to home view
 		//also pass the logged actions, so we can display them on the home view
 		return view('home', ['actions' => $actions, 'logged_actions' => $logged_actions]);
@@ -62,9 +73,7 @@ class NiceActionController extends Controller{
 		// using that we access logged_actions method which defines relationships between
 		//NiceAction & NiceActionLogs models
 		//then apply save and pass the argument $nice_action_log which is our log entry
-		$nice_action->logged_actions()->save($nice_action_log);
-		
-
+// 		$nice_action->logged_actions()->save($nice_action_log);
 		
 		//1st param is the view to be rendered
 		//2nd param is the params that can be used in the view
@@ -87,6 +96,9 @@ class NiceActionController extends Controller{
 	//function that will handle POST requests
 	//the parameters & form values are passed to this function in the Request object
 	public function postNiceAction(Request $request){
+		
+		
+		
 		
 		//this is how we validate form content in laravel
 		//1st param is the request object we get from the form
@@ -113,6 +125,12 @@ class NiceActionController extends Controller{
 	//the parameters & form values are passed to this function in the Request object
 	public function addNiceAction(Request $request){
 	
+		Log::info('Inside addNiceAction:');
+		Log::info('Inside name is :' .$request['actionName'] );
+		Log::info('Inside niceness is :' .$request['intValueOfAction'] );
+		
+		Log::info('before validate:');
+		
 		//this is how we validate form content in laravel
 		//1st param is the request object we get from the form
 		//2nd param is an array of key, value pairs (associative array), inside which we have form fields.
@@ -126,8 +144,7 @@ class NiceActionController extends Controller{
 	
 		]);
 	
-		
-		
+			
 		//create an object of NiceAction
 		//you will need to import NiceAction class 
 		$nice_action = new NiceAction();
@@ -138,16 +155,41 @@ class NiceActionController extends Controller{
 		$nice_action->name=ucfirst(strtolower($request['actionName']));
 		$nice_action->niceness = $request['intValueOfAction'];
 		
+		
 		//save the object
-		//this will insert a record into NiceActions table
+		//this will insert a record into NiceActions table	
 		$nice_action->save();
 		
+// 		if($nice_action->save()){
+			
+// 			Log::info('data was saved');
+			
+// 		}
+// 		else{
+// 			Log::info('data was not saved');
+			
+// 		}
 		
+		//if the request was ajax request
+		if($request->ajax()){
+			
+			
+			Log::info('request was ajax:');
+					
+			//return a json response 
+			//this will ensure the page is not reloaded with the redirect we have below
+			return response()->json();
+			
+		}
+	
+		//here we are using redirect
 		return redirect()->route('home');
+		
 			
 	
 			
 	}//addNiceAction
+	
 	
 	
 	
