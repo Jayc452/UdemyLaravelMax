@@ -73,7 +73,7 @@ class NiceActionController extends Controller{
 		// using that we access logged_actions method which defines relationships between
 		//NiceAction & NiceActionLogs models
 		//then apply save and pass the argument $nice_action_log which is our log entry
-// 		$nice_action->logged_actions()->save($nice_action_log);
+		$nice_action->logged_actions()->save($nice_action_log);
 		
 		//1st param is the view to be rendered
 		//2nd param is the params that can be used in the view
